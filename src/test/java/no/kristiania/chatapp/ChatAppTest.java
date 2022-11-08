@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ChatAppTest {
 
     private ChatApp server;
@@ -20,5 +22,4 @@ public class ChatAppTest {
     private HttpURLConnection openConnection(String spec) throws IOException {
         return (HttpURLConnection) new URL(server.getURL(), spec).openConnection();
     }
-
 }
