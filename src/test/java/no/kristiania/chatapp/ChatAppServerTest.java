@@ -25,6 +25,13 @@ public class ChatAppServerTest {
         assertThat(con.getResponseCode()).isEqualTo(200);
     }
 
+    @Test
+    void ShouldServeCorrectTitle() throws IOException {
+        var con = openConnection("/");
+        assertThat(con.getInputStream())
+                .asString(StandardCharsets.UTF_8)
+                .contains("<title>Welcome to ChatApp!</title>");
+    }
 
     private HttpURLConnection openConnection(String spec) throws IOException {
         return (HttpURLConnection) new URL(server.getURL(), spec).openConnection();
