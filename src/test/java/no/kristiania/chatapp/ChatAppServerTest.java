@@ -1,23 +1,30 @@
 package no.kristiania.chatapp;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ChatAppTest {
+public class ChatAppServerTest {
 
-    private ChatApp server;
+    private ChatAppServer server;
+    @BeforeEach
+    void setup() throws Exception {
+        server = new ChatAppServer(0);
+        server.start();
+    }
 
     @Test
     void httpResponseShouldBe200Test() throws IOException {
         var con = openConnection("/");
         assertThat(con.getResponseCode()).isEqualTo(200);
     }
+
 
     private HttpURLConnection openConnection(String spec) throws IOException {
         return (HttpURLConnection) new URL(server.getURL(), spec).openConnection();
