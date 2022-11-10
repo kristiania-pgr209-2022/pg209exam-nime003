@@ -20,7 +20,7 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
     @Override
     public List<Message> retrieveAllMessages() throws SQLException {
         try (var conn = dataSource.getConnection()){
-            try (var stmt = conn.prepareStatement("select * from [group]")){
+            try (var stmt = conn.prepareStatement("select * from message")){
                 return collectQueryResult(stmt, JdbcMessageDao::readMessage);
             }
         }
@@ -50,7 +50,7 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
         message.setSenderId(rs.getInt("sender_id"));
         message.setGroupId(rs.getInt("group_id"));
         message.setMessage(rs.getString("message"));
-        message.setDateTimeSent(rs.getString("datetime_sent"));
+        message.setDateTimeSent(rs.getString("time_sent"));
         return message;
     }
 }

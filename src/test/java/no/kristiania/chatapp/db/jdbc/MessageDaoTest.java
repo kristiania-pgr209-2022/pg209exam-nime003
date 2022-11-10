@@ -1,5 +1,6 @@
 package no.kristiania.chatapp.db.jdbc;
 
+import no.kristiania.chatapp.db.Group;
 import no.kristiania.chatapp.db.InMemoryDatasource;
 import no.kristiania.chatapp.db.Message;
 import no.kristiania.chatapp.db.MessageDao;
@@ -15,31 +16,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MessageDaoTest {
 
     private MessageDao dao;
+    private final SampleData sampleData = new SampleData();
 
     @BeforeEach
     void setup() {
         dao = new JdbcMessageDao(InMemoryDatasource.createTestDataSource());
     }
 
-    @Disabled("Disabled due to incorrect test order! We need to initialize and test user and group tables first")
     @Test
     void ShouldRetrieveAllMessages() throws SQLException {
-        var message1 = new Message();
-        message1.setSenderId(1);
-        message1.setGroupId(1);
-        message1.setMessage("Hei jeg heter Nils!");
+        // message table has foreign keys user and group, thus it crashes when using the default int value of 0 (because int can't be null)
+        var userDaoTest = new UserDaoTest();
+        userDaoTest.setup();
+        userDaoTest.shouldSaveAndRetrieveUser();
 
-        var message2 = new Message();
-        message2.setSenderId(2);
-        message2.setGroupId(1);
-        message2.setMessage("Hei jeg heter Pål!");
+        var groupDaoTest = new GroupDaoTest();
+        groupDaoTest.setup();
+        groupDaoTest.ShouldSaveAndRetrieveAllGroups();
 
+        var message1 = sampleData.sampleMessage("Hello World!");
+        var message2 = sampleData.sampleMessage("World Hello!");
 
         dao.save(message1);
         dao.save(message2);
 
         assertThat(dao.retrieveAllMessages())
                 .extracting(Message::getMessage)
-                .contains("Hei jeg heter Nils!");
+                .contains(message1.getMessage()
+                        , message2.getMessage());
+
     }
 }
