@@ -1,8 +1,14 @@
 package no.kristiania.chatapp.db.jdbc;
 
+import no.kristiania.chatapp.db.Group;
+import no.kristiania.chatapp.db.GroupDao;
 import no.kristiania.chatapp.db.InMemoryDatasource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.sql.SQLException;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroupDaoTest {
 
@@ -14,7 +20,7 @@ public class GroupDaoTest {
     }
     
     @Test
-    void ShouldSaveAndRetrieveAllGroups() {
+    void ShouldSaveAndRetrieveAllGroups() throws SQLException {
         var group1 = new Group();
         group1.setGroupName("Nils sin ChatApp-Gruppe");
 
@@ -25,8 +31,8 @@ public class GroupDaoTest {
         dao.save(group2);
 
         assertThat(dao.retrieveAllGroups())
-                .extracting(Group::group)
-                .contains(group1.getGroupName
-                        , group2.getGroupName);
+                .extracting(Group::getGroupName)
+                .contains(group1.getGroupName()
+                        , group2.getGroupName());
     }
 }
