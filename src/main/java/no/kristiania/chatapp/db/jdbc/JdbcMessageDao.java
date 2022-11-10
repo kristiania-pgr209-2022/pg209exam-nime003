@@ -28,9 +28,9 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
 
     @Override
     public void save(Message message) throws SQLException {
-        try (var connection = dataSource.getConnection()) {
+        try (var conn = dataSource.getConnection()) {
             var sql = "insert into message (sender_id, group_id, message) values (?, ?, ?)";
-            try (var stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            try (var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, message.getSenderId());
                 stmt.setInt(2, message.getGroupId());
                 stmt.setString(3, message.getMessage());

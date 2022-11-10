@@ -1,6 +1,8 @@
 package no.kristiania.chatapp.db.jdbc;
 
 import no.kristiania.chatapp.db.InMemoryDatasource;
+import no.kristiania.chatapp.db.User;
+import no.kristiania.chatapp.db.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +24,7 @@ public class UserDaoTest {
 
         dao.save(user);
 
-        assertThat(dao.retrieveUser(user.getId))
+        assertThat(dao.retrieveUser(user.getId()))
                 .hasNoNullFieldsOrProperties()
                 .usingRecursiveComparison()
                 .isEqualTo(user)
