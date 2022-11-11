@@ -27,6 +27,16 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
     }
 
     @Override
+    public List<Message> getAllMessagesByGroupId(long groupId) throws SQLException {
+        try (var conn = dataSource.getConnection()){
+            try (var stmt = conn.prepareStatement("select * from message where group_id = ?")){
+                stmt.setLong(1, groupId);
+                return collectQueryResult(stmt, JdbcMessageDao::readMessage);
+            }
+        }
+    }
+
+    @Override
     public void save(Message message) throws SQLException {
         try (var conn = dataSource.getConnection()) {
             var sql = "insert into message (sender_id, group_id, message) values (?, ?, ?)";

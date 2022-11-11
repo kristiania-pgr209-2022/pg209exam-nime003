@@ -5,8 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,10 +17,11 @@ public class MessageDaoTest {
 
     private MessageDao dao;
     private final SampleData sampleData = new SampleData();
+    private final DataSource testDataSource = InMemoryDatasource.createTestDataSource();
 
     @BeforeEach
     void setup() {
-        dao = new JdbcMessageDao(InMemoryDatasource.createTestDataSource());
+        dao = new JdbcMessageDao(testDataSource);
     }
 
     @Test
@@ -31,8 +35,8 @@ public class MessageDaoTest {
         groupDaoTest.setup();
         groupDaoTest.shouldSaveAndRetrieveAllGroups();
 
-        var message1 = sampleData.sampleMessage("Hello World!");
-        var message2 = sampleData.sampleMessage("World Hello!");
+        var message1 = sampleData.sampleMessage(1L, 1L);
+        var message2 = sampleData.sampleMessage(1L, 1L);
 
         dao.save(message1);
         dao.save(message2);
@@ -45,20 +49,27 @@ public class MessageDaoTest {
     }
 
     @Test
-    void getMessagesByGroupId() {
-        var user1 = new User();
-        user1 = sampleData.sampleUser();
+    void getMessagesByGroupId() throws SQLException {
+        var userDao = new JdbcUserDao(testDataSource);
+        var user1 = sampleData.sampleUser();
+        userDao.save(user1);
 
-        var group1 = new Group();
-        group1 = sampleData.sampleGroup();
+        var groupDao = new JdbcGroupDao(testDataSource);
+        var groups = Arrays.asList(sampleData.sampleGroup(), sampleData.sampleGroup());
 
-        var message1 = new Message();
-        message1 = sampleData.sampleMessage("Jonfinn kom på besøk!");
+        for (var group : groups) groupDao.save(group);
 
-        var message2 = new Message();
-        message2 = sampleData.sampleMessage("Jeg liker ikke Jonfinn!!");
 
-        assertThat(dao.getAllMessagesByGroupId(message1.getGroupId()))
-                .contains(message1, message2);
+        var messages = Arrays.asList(
+                sampleData.sampleMessage(user1.getId(), groups.get(0).getId()),
+                sampleData.sampleMessage(user1.getId(), groups.get(1).getId()),
+                sampleData.sampleMessage(user1.getId(), groups.get(0).getId())
+        );
+
+        for(var message : messages) dao.save(message);
+
+        assertThat(dao.getAllMessagesByGroupId(messages.get(0).getGroupId()))
+                .extracting(Message::getId)
+                .contains(messages.get(0).getId(), messages.get(2).getId());
     }
 }

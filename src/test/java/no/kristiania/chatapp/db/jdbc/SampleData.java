@@ -19,15 +19,15 @@ public class SampleData {
 
     public Group sampleGroup(){
         var group = new Group();
-        group.setGroupName(pickOne("Klassechat", "chattern"));
+        group.setGroupName(pickOne("Klassechat", "chattern", "Ipsum lorem", "amet sit dolor"));
         return group;
     }
 
-    public Message sampleMessage(String str){
+    public Message sampleMessage(Long senderId, Long groupId){
         var message = new Message();
-        message.setSenderId(1);
-        message.setGroupId(1);
-        message.setMessage(str);
+        message.setSenderId(senderId);
+        message.setGroupId(groupId);
+        message.setMessage(pickOne("Hello World!", "World Hello!", "Lorem ipsum", "dolor sit amet"));
         return message;
     }
 

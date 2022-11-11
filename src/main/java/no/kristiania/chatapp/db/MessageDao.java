@@ -8,4 +8,5 @@ public interface MessageDao {
 
     List<Message> retrieveAllMessages() throws SQLException;
 
+    List<Message> getAllMessagesByGroupId(long groupId) throws SQLException;
 }
