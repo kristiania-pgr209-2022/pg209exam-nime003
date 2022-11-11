@@ -1,9 +1,6 @@
 package no.kristiania.chatapp.db.jdbc;
 
-import no.kristiania.chatapp.db.Group;
-import no.kristiania.chatapp.db.InMemoryDatasource;
-import no.kristiania.chatapp.db.Message;
-import no.kristiania.chatapp.db.MessageDao;
+import no.kristiania.chatapp.db.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -45,5 +42,23 @@ public class MessageDaoTest {
                 .contains(message1.getMessage()
                         , message2.getMessage());
 
+    }
+
+    @Test
+    void getMessagesByGroupId() {
+        var user1 = new User();
+        user1 = sampleData.sampleUser();
+
+        var group1 = new Group();
+        group1 = sampleData.sampleGroup();
+
+        var message1 = new Message();
+        message1 = sampleData.sampleMessage("Jonfinn kom på besøk!");
+
+        var message2 = new Message();
+        message2 = sampleData.sampleMessage("Jeg liker ikke Jonfinn!!");
+
+        assertThat(dao.getAllMessagesByGroupId(message1.getGroupId()))
+                .contains(message1, message2);
     }
 }
