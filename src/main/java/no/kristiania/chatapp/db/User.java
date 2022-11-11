@@ -1,15 +1,15 @@
 package no.kristiania.chatapp.db;
 
 public class User {
-    private int id;
+    private long id;
     private String username;
     private String password;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

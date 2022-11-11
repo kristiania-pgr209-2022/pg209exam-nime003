@@ -27,7 +27,7 @@ public class JdbcGroupDao extends AbstractJdbcDao implements GroupDao {
 
                 try (var generatedKeys = stmt.getGeneratedKeys()) {
                     generatedKeys.next();
-                    group.setId(generatedKeys.getInt(1));
+                    group.setId(generatedKeys.getLong(1));
                 }
             }
         }
@@ -44,7 +44,7 @@ public class JdbcGroupDao extends AbstractJdbcDao implements GroupDao {
 
     private static Group readGroup(ResultSet rs) throws SQLException {
         var group = new Group();
-        group.setId(rs.getInt("id"));
+        group.setId(rs.getLong("id"));
         group.setGroupName(rs.getString("group_name"));
         return group;
     }

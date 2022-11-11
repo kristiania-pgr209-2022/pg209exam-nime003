@@ -1,33 +1,35 @@
 package no.kristiania.chatapp.db;
 
-public class Message {
-    private int id;
-    private int senderId;
-    private int groupId;
-    private String message;
-    private String dateTimeSent;
+import java.sql.Timestamp;
 
-    public int getId() {
+public class Message {
+    private long id;
+    private long senderId;
+    private long groupId;
+    private String message;
+    private Timestamp dateTimeSent;
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getSenderId() {
+    public long getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(int senderId) {
+    public void setSenderId(long senderId) {
         this.senderId = senderId;
     }
 
-    public int getGroupId() {
+    public long getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
 
@@ -39,11 +41,11 @@ public class Message {
         this.message = message;
     }
 
-    public String getDateTimeSent() {
+    public Timestamp getDateTimeSent() {
         return dateTimeSent;
     }
 
-    public void setDateTimeSent(String dateTimeSent) {
+    public void setDateTimeSent(Timestamp dateTimeSent) {
         this.dateTimeSent = dateTimeSent;
     }
 }

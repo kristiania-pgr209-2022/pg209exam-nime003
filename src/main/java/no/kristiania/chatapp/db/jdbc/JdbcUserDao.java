@@ -17,22 +17,13 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
     }
 
     @Override
-    public User retrieveUser(int id) throws SQLException {
+    public User retrieveUser(long id) throws SQLException {
         try (var conn = dataSource.getConnection()){
             try (var stmt = conn.prepareStatement("select * from [user] where id = ?")){
-                stmt.setInt(1, id);
+                stmt.setLong(1, id);
                 return collectSingleResult(stmt, JdbcUserDao::readUser);
             }
         }
-    }
-
-    private static User readUser(ResultSet rs) throws SQLException {
-        var user = new User();
-        user.setId(rs.getInt("id"));
-        user.setUsername(rs.getString("username"));
-        user.setPassword(rs.getString("password"));
-        return user;
-
     }
 
     @Override
@@ -50,5 +41,14 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
                 }
             }
         }
+    }
+
+    private static User readUser(ResultSet rs) throws SQLException {
+        var user = new User();
+        user.setId(rs.getLong("id"));
+        user.setUsername(rs.getString("username"));
+        user.setPassword(rs.getString("password"));
+        return user;
+
     }
 }

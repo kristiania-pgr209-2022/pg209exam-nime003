@@ -1,14 +1,14 @@
 package no.kristiania.chatapp.db;
 
 public class Group {
-    private int id;
+    private long id;
     private String groupName;
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

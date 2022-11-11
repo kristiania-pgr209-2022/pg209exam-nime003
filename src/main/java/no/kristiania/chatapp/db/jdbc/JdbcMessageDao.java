@@ -31,14 +31,15 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
         try (var conn = dataSource.getConnection()) {
             var sql = "insert into message (sender_id, group_id, message) values (?, ?, ?)";
             try (var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setInt(1, message.getSenderId());
-                stmt.setInt(2, message.getGroupId());
+                stmt.setLong(1, message.getSenderId());
+                stmt.setLong(2, message.getGroupId());
                 stmt.setString(3, message.getMessage());
                 stmt.executeUpdate();
 
                 try (var generatedKeys = stmt.getGeneratedKeys()) {
                     generatedKeys.next();
-                    message.setId(generatedKeys.getInt(1));
+                    message.setId(generatedKeys.getLong(1));
+                    message.setDateTimeSent(generatedKeys.getTimestamp(2));
                 }
             }
         }
@@ -46,11 +47,11 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
 
     private static Message readMessage(ResultSet rs) throws SQLException {
         var message = new Message();
-        message.setId(rs.getInt("id"));
-        message.setSenderId(rs.getInt("sender_id"));
-        message.setGroupId(rs.getInt("group_id"));
+        message.setId(rs.getLong("id"));
+        message.setSenderId(rs.getLong("sender_id"));
+        message.setGroupId(rs.getLong("group_id"));
         message.setMessage(rs.getString("message"));
-        message.setDateTimeSent(rs.getString("time_sent"));
+        message.setDateTimeSent(rs.getTimestamp("time_sent"));
         return message;
     }
 }
