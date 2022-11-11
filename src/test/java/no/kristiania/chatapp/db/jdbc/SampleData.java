@@ -4,6 +4,7 @@ import no.kristiania.chatapp.db.Group;
 import no.kristiania.chatapp.db.Message;
 import no.kristiania.chatapp.db.User;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class SampleData {
@@ -17,10 +18,26 @@ public class SampleData {
         return user;
     }
 
+    public ArrayList<User> sampleUsers(int howMany){
+        var list = new ArrayList<User>();
+        for (int i = 0; i < howMany; i++){
+            list.add(sampleUser());
+        }
+        return list;
+    }
+
     public Group sampleGroup(){
         var group = new Group();
         group.setGroupName(pickOne("Klassechat", "chattern", "Ipsum lorem", "amet sit dolor"));
         return group;
+    }
+
+    public ArrayList<Group> sampleGroups(int howMany) {
+        var list = new ArrayList<Group>();
+        for (int i = 0; i < howMany; i++) {
+            list.add(sampleGroup());
+        }
+        return list;
     }
 
     public Message sampleMessage(Long senderId, Long groupId){
