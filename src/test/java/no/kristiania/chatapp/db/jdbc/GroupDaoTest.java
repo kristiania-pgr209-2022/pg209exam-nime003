@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GroupDaoTest {
 
     private GroupDao dao;
+    private SampleData sampleData;
 
     @BeforeEach
     void setup() {
@@ -20,7 +21,7 @@ public class GroupDaoTest {
     }
     
     @Test
-    void ShouldSaveAndRetrieveAllGroups() throws SQLException {
+    void shouldSaveAndRetrieveAllGroups() throws SQLException {
         var group1 = new Group();
         group1.setGroupName("Nils sin ChatApp-Gruppe");
 
@@ -34,5 +35,19 @@ public class GroupDaoTest {
                 .extracting(Group::getGroupName)
                 .contains(group1.getGroupName()
                         , group2.getGroupName());
+    }
+
+    @Test
+    void shouldSaveAndRetrieveGroupById() throws SQLException {
+        var group = new Group();
+        group = sampleData.sampleGroup();
+
+        dao.save(group);
+
+        assertThat(dao.retrieveGroup(group.getId()))
+                .hasNoNullFieldsOrProperties()
+                .usingRecursiveComparison()
+                .isEqualTo(group)
+                .isNotSameAs(group);
     }
 }

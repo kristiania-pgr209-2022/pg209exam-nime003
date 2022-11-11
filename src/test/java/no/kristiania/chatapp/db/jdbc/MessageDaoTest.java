@@ -32,7 +32,7 @@ public class MessageDaoTest {
 
         var groupDaoTest = new GroupDaoTest();
         groupDaoTest.setup();
-        groupDaoTest.ShouldSaveAndRetrieveAllGroups();
+        groupDaoTest.shouldSaveAndRetrieveAllGroups();
 
         var message1 = sampleData.sampleMessage("Hello World!");
         var message2 = sampleData.sampleMessage("World Hello!");
