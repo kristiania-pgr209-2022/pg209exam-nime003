@@ -1,16 +1,14 @@
 package no.kristiania.chatapp.db.jdbc;
 
-import no.kristiania.chatapp.db.*;
+import no.kristiania.chatapp.db.InMemoryDatasource;
+import no.kristiania.chatapp.db.Message;
+import no.kristiania.chatapp.db.MessageDao;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,6 +22,10 @@ public class MessageDaoTest {
     void setup() {
         dao = new JdbcMessageDao(testDataSource);
     }
+
+    // Message table has foreign keys user and group,
+    // thus it crashes when using the default int value of 0 (because int can't be null, which would work?)
+    // so we need at least one user and group in the database.
 
     @Test
     void shouldRetrieveMessageById() throws SQLException {
@@ -42,7 +44,6 @@ public class MessageDaoTest {
 
     @Test
     void shouldRetrieveAllMessages() throws SQLException {
-        // message table has foreign keys user and group, thus it crashes when using the default int value of 0 (because int can't be null)
         var userDaoTest = new UserDaoTest();
         userDaoTest.setup();
         userDaoTest.shouldSaveAndRetrieveUser();
@@ -67,19 +68,19 @@ public class MessageDaoTest {
     @Test
     void getMessagesByGroupId() throws SQLException {
         var userDao = new JdbcUserDao(testDataSource);
-        var user1 = sampleData.sampleUser();
-        userDao.save(user1);
+        var user = sampleData.sampleUser();
+        userDao.save(user);
 
         var groupDao = new JdbcGroupDao(testDataSource);
-        var groups = Arrays.asList(sampleData.sampleGroup(), sampleData.sampleGroup());
+        var groups = sampleData.sampleGroups(2);
 
         for (var group : groups) groupDao.save(group);
 
 
         var messages = Arrays.asList(
-                sampleData.sampleMessage(user1.getId(), groups.get(0).getId()),
-                sampleData.sampleMessage(user1.getId(), groups.get(0).getId()),
-                sampleData.sampleMessage(user1.getId(), groups.get(1).getId())
+                sampleData.sampleMessage(user.getId(), groups.get(0).getId()),
+                sampleData.sampleMessage(user.getId(), groups.get(0).getId()),
+                sampleData.sampleMessage(user.getId(), groups.get(1).getId())
         );
 
         for(var message : messages) dao.save(message);
@@ -92,11 +93,11 @@ public class MessageDaoTest {
     @Test
     void shouldRetrieveMessagesByUserId() throws SQLException {
         var userDao = new JdbcUserDao(testDataSource);
-        var users = Arrays.asList(sampleData.sampleUser(), sampleData.sampleUser());
+        var users = sampleData.sampleUsers(2);
         for(var user : users) userDao.save(user);
 
         var group = sampleData.sampleGroup();
-        new JdbcGroupDao(testDataSource).save(group); // test needs at least 1 group in the database to work.
+        new JdbcGroupDao(testDataSource).save(group);
 
         var messages = Arrays.asList(
                 sampleData.sampleMessage(users.get(0).getId(), group.getId()),

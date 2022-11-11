@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,15 +34,13 @@ public class UserDaoTest {
 
     @Test
     void shouldRetrieveAllUsers() throws SQLException {
-        var users = new ArrayList<User>();
-
-        for (int i = 0; i < 5; i++){
-            users.add(sampleData.sampleUser());
-        }
+        var users = sampleData.sampleUsers(5);
         for(var user : users) dao.save(user);
 
         assertThat(dao.retrieveAllUsers())
                 .usingRecursiveComparison()
-                .isEqualTo(users);
+                .isEqualTo(users)
+                .isNotSameAs(users);
+        //fails because of JdbcUserDao.retrieveAllUsers isn't properly implemented yet
     }
 }
