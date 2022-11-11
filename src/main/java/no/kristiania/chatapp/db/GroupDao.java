@@ -7,4 +7,7 @@ public interface GroupDao {
     void save(Group group) throws SQLException;
 
     List<Group> retrieveAllGroups() throws SQLException;
+
+    Group retrieveGroup(long id) throws SQLException;
+
 }

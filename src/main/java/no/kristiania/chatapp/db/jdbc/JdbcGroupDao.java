@@ -41,6 +41,15 @@ public class JdbcGroupDao extends AbstractJdbcDao implements GroupDao {
             }
         }
     }
+    @Override
+    public Group retrieveGroup(long id) throws SQLException {
+        try (var conn = dataSource.getConnection()){
+            try (var stmt = conn.prepareStatement("select * from [group] where id = ?")){
+                stmt.setLong(1, id);
+                return collectSingleResult(stmt, JdbcGroupDao::readGroup);
+            }
+        }
+    }
 
     private static Group readGroup(ResultSet rs) throws SQLException {
         var group = new Group();

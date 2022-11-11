@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GroupDaoTest {
 
     private GroupDao dao;
-    private SampleData sampleData;
+    private final SampleData sampleData = new SampleData();
 
     @BeforeEach
     void setup() {
