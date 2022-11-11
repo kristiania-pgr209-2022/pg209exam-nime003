@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 
 public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
@@ -24,6 +25,11 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
                 return collectSingleResult(stmt, JdbcUserDao::readUser);
             }
         }
+    }
+
+    @Override
+    public List<User> retrieveAllUsers() throws SQLException {
+        return null;
     }
 
     @Override

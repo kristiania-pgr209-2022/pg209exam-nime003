@@ -7,11 +7,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserDaoTest {
     private UserDao dao;
+    private final SampleData sampleData = new SampleData();
 
     @BeforeEach
     void setup(){dao = new JdbcUserDao(InMemoryDatasource.createTestDataSource());}
@@ -29,5 +31,19 @@ public class UserDaoTest {
                 .usingRecursiveComparison()
                 .isEqualTo(user)
                 .isNotSameAs(user);
+    }
+
+    @Test
+    void shouldRetrieveAllUsers() throws SQLException {
+        var users = new ArrayList<User>();
+
+        for (int i = 0; i < 5; i++){
+            users.add(sampleData.sampleUser());
+        }
+        for(var user : users) dao.save(user);
+
+        assertThat(dao.retrieveAllUsers())
+                .usingRecursiveComparison()
+                .isEqualTo(users);
     }
 }

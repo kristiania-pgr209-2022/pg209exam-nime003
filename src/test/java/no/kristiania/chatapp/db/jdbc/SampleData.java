@@ -12,8 +12,8 @@ public class SampleData {
 
     public User sampleUser(){
         var user = new User();
-        user.setUsername(pickOne("Nils", "Pål"));
-        user.setPassword(pickOne("sliN", "låP"));
+        user.setUsername(pickOne("Nils", "Pål", "ipsum", "lorem"));
+        user.setPassword(pickOne("sliN", "låP", "ipsum", "lorem"));
         return user;
     }
 
