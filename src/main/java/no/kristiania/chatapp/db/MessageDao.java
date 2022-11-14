@@ -10,7 +10,7 @@ public interface MessageDao {
 
     List<Message> getAllMessagesByGroupId(long groupId) throws SQLException;
 
-    List<Message> retrieveAllMessagesByUserId(long id);
+    List<Message> retrieveAllMessagesByUserId(long userId) throws SQLException;
 
     Message retrieveMessage(long id);
 }
