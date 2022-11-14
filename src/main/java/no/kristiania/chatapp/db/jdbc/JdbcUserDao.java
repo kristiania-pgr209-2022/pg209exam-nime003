@@ -43,7 +43,7 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
 
                 try (var generatedKeys = stmt.getGeneratedKeys()) {
                     generatedKeys.next();
-                    user.setId(generatedKeys.getInt(1));
+                    user.setId(generatedKeys.getLong(1));
                 }
             }
         }

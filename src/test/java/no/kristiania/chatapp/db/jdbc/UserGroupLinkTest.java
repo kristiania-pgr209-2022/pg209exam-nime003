@@ -38,6 +38,11 @@ public class UserGroupLinkTest {
         var user1Links = new ArrayList<UserGroupLink>();
         var user2Links = new ArrayList<UserGroupLink>();
 
+        var userDao = new JdbcUserDao(dataSource);
+        userDao.save(user1);
+        userDao.save(user2);
+
+
         for(int i = 0; i < 3; i++){
             groups.add(sampleData.sampleGroup());
         }
@@ -46,19 +51,22 @@ public class UserGroupLinkTest {
         for (var group : groups){
             groupDao.save(group);
 
-            var link = new UserGroupLink();
-            link.setGroupId(group.getId());
-            link.setUserId(user1.getId());
-
-            user1Links.add(link);
+            var link1 = new UserGroupLink();
+            link1.setGroupId(group.getId());
+            link1.setUserId(user1.getId());
+            user1Links.add(link1);
 
             // this is necessary so that just returning all links don't pass the test.
-            link.setUserId(user2.getId());
-            user2Links.add(link);
+            var link2 = new UserGroupLink();
+            link2.setGroupId(group.getId());
+            link2.setUserId(user2.getId());
+            user2Links.add(link2);
         }
 
         for (var link : user1Links) dao.save(link);
         for (var link : user2Links) dao.save(link);
+
+        System.out.println(dao.retrieveAllByUserId(user1.getId()));
 
         assertThat(dao.retrieveAllByUserId(user1.getId()))
                 .usingRecursiveComparison()
