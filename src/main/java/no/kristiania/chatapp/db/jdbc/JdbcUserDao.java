@@ -29,7 +29,11 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
 
     @Override
     public List<User> retrieveAllUsers() throws SQLException {
-        return null;
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.prepareStatement("select * from [user]")){
+                return collectQueryResult(stmt, JdbcUserDao::readUser);
+            }
+        }
     }
 
     @Override
