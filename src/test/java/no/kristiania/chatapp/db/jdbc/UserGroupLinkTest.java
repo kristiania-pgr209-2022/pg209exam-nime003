@@ -6,28 +6,24 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserGroupLinkTest {
-    private UserGroupLinkDao dao;
+    private UserGroupLinkDao linkDao;
     private final SampleData sampleData = new SampleData();
     private final DataSource dataSource = InMemoryDatasource.createTestDataSource();
 
+    private final JdbcGroupDao groupDao = new JdbcGroupDao(dataSource);
+    private final JdbcUserDao userDao = new JdbcUserDao(dataSource);
+
+
     @BeforeEach
     void setup(){
-        dao = new JdbcUserGroupLinkDao(dataSource);
-    }
-
-    @Disabled("not made yet")
-    @Test
-    void shouldRetrieveAllUserGroupLinks(){
-
+        linkDao = new JdbcUserGroupLinkDao(dataSource);
     }
 
     @Test
@@ -38,16 +34,13 @@ public class UserGroupLinkTest {
         var user1Links = new ArrayList<UserGroupLink>();
         var user2Links = new ArrayList<UserGroupLink>();
 
-        var userDao = new JdbcUserDao(dataSource);
         userDao.save(user1);
         userDao.save(user2);
-
 
         for(int i = 0; i < 3; i++){
             groups.add(sampleData.sampleGroup());
         }
 
-        var groupDao = new JdbcGroupDao(dataSource);
         for (var group : groups){
             groupDao.save(group);
 
@@ -63,19 +56,42 @@ public class UserGroupLinkTest {
             user2Links.add(link2);
         }
 
-        for (var link : user1Links) dao.save(link);
-        for (var link : user2Links) dao.save(link);
+        for (var link : user1Links) linkDao.save(link);
+        for (var link : user2Links) linkDao.save(link);
 
-        System.out.println(dao.retrieveAllByUserId(user1.getId()));
+        System.out.println(linkDao.retrieveAllByUserId(user1.getId()));
 
-        assertThat(dao.retrieveAllByUserId(user1.getId()))
+        assertThat(linkDao.retrieveAllByUserId(user1.getId()))
                 .usingRecursiveComparison()
                 .isEqualTo(user1Links);
     }
 
-    @Disabled("not made yet")
     @Test
-    void shouldRetrieveUserGroupLinksByGroupId(){
+    void shouldRetrieveUserGroupLinksByGroupId() throws SQLException {
+        var users = sampleData.sampleUsers(3);
+        var groups = sampleData.sampleGroups(3);
+        var expectedLinks = new ArrayList<UserGroupLink>();
 
+        for (var group : groups){
+            groupDao.save(group);
+            for(var user : users){
+                userDao.save(user);
+                var tempLink = new UserGroupLink();
+                tempLink.setGroupId(group.getId());
+                tempLink.setUserId(user.getId());
+                linkDao.save(tempLink);
+                expectedLinks.add(tempLink);
+            }
+        }
+
+        var expectedGroupId = groups.get(groups.size() - 1).getId();
+        expectedLinks = (ArrayList<UserGroupLink>) expectedLinks.stream()
+                .filter(link -> expectedGroupId == link.getGroupId()).collect(Collectors.toList());
+        var actual = linkDao.retrieveAllByGroupId(expectedGroupId);
+
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedLinks)
+                .isNotSameAs(expectedLinks);
     }
 }
