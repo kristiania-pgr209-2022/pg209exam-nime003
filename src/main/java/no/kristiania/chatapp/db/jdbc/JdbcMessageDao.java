@@ -47,8 +47,13 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
     }
 
     @Override
-    public Message retrieveMessage(long id) {
-        return null;
+    public Message retrieveMessage(long id) throws SQLException {
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.prepareStatement("select * from message where id = ?")) {
+                stmt.setLong(1, id);
+                return collectSingleResult(stmt, JdbcMessageDao::readMessage);
+            }
+        }
     }
 
     @Override
