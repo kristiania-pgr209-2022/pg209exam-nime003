@@ -8,8 +8,10 @@ import org.junit.jupiter.api.*;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.extractProperty;
 
 public class UserDaoTest {
     private static UserDao dao;
@@ -39,8 +41,10 @@ public class UserDaoTest {
     @Test
     void shouldRetrieveAllUsers() throws SQLException {
         assertThat(dao.retrieveAllUsers())
-                .usingRecursiveComparison()
-                .isEqualTo(users)
+                .extracting(User::getId)
+                .containsAll(users.stream()
+                        .map(User::getId)
+                        .collect(Collectors.toList()))
                 .isNotSameAs(users);
     }
 }
