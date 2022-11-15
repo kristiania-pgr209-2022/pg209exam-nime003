@@ -47,6 +47,16 @@ public class JdbcUserGroupLinkDao extends AbstractJdbcDao implements UserGroupLi
         }
     }
 
+    @Override
+    public List<UserGroupLink> retrieveAllByGroupId(long groupId) throws SQLException {
+        try (var conn = dataSource.getConnection()){
+            try (var stmt = conn.prepareStatement("select * from user_group_link where group_id = ?")){
+                stmt.setLong(1, groupId);
+                return collectQueryResult(stmt, JdbcUserGroupLinkDao::readUserGroupLink);
+            }
+        }    }
+
+
     private static UserGroupLink readUserGroupLink(ResultSet rs) throws SQLException {
         var link = new UserGroupLink();
         link.setId(rs.getLong("id"));
