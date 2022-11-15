@@ -26,6 +26,7 @@ public class MessageDaoTest {
     // Message table has foreign keys user and group,
     // thus it crashes when using the default int value of 0 (because int can't be null, which would work?)
     // so we need at least one user and group in the database.
+    // This is done here in some part by initializing the tests for userDao and groupDao.
 
     @Test
     void shouldRetrieveMessageById() throws SQLException {
