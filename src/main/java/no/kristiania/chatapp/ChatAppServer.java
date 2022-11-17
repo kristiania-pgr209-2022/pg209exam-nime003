@@ -1,10 +1,15 @@
 package no.kristiania.chatapp;
 
+import org.eclipse.jetty.server.ResourceService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +40,8 @@ public class ChatAppServer {
         } else {
             wContext.setBaseResource(resources);
         }
+
+        wContext.addServlet(new ServletHolder(new ServletContainer(new ResourceConfig(UserEndpoint.class))), "/api/*");
 
         chatAppServer.setHandler(new HandlerList(wContext));
     }
