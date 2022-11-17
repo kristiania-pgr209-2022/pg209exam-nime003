@@ -1,10 +1,10 @@
 package no.kristiania.chatapp;
 
-import org.eclipse.jetty.server.ResourceService;
+import no.kristiania.chatapp.db.Database;
+import no.kristiania.chatapp.endpoints.UserEndpoint;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -13,6 +13,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -23,7 +24,7 @@ public class ChatAppServer {
     private static final Logger logger = LoggerFactory.getLogger(no.kristiania.chatapp.ChatAppServer.class);
     private final Server chatAppServer;
 
-    public ChatAppServer(int port) throws IOException {
+    public ChatAppServer(int port, DataSource dataSource) throws IOException {
         this.chatAppServer = new Server(port);
 
         var wContext = new WebAppContext();
@@ -41,7 +42,7 @@ public class ChatAppServer {
             wContext.setBaseResource(resources);
         }
 
-        wContext.addServlet(new ServletHolder(new ServletContainer(new ResourceConfig(UserEndpoint.class))), "/api/*");
+        wContext.addServlet(new ServletHolder(new ServletContainer(new ChatappConfig(dataSource))), "/api/*");
 
         chatAppServer.setHandler(new HandlerList(wContext));
     }
@@ -66,7 +67,7 @@ public class ChatAppServer {
         int port = Optional.ofNullable(System.getenv("HTTP_PLATFORM_PORT"))
                 .map(Integer::parseInt)
                 .orElse(9090);
-        var chatAppServer = new ChatAppServer(port/*, Database.getDataSource()*/);
+        var chatAppServer = new ChatAppServer(port, Database.getDataSource());
         chatAppServer.start();
         logger.warn("Starting at port {}", chatAppServer.getURL());
     }

@@ -1,5 +1,6 @@
 package no.kristiania.chatapp.db.jdbc;
 
+import jakarta.inject.Inject;
 import no.kristiania.chatapp.db.User;
 import no.kristiania.chatapp.db.UserDao;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
     private final DataSource dataSource;
 
+    @Inject
     public JdbcUserDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }

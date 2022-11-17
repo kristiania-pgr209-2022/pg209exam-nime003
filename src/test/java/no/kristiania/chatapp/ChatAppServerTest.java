@@ -2,6 +2,7 @@ package no.kristiania.chatapp;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import no.kristiania.chatapp.db.InMemoryDatasource;
 import no.kristiania.chatapp.db.jdbc.SampleData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class ChatAppServerTest {
     private SampleData sampleData = new SampleData();
     @BeforeEach
     void setup() throws Exception {
-        server = new ChatAppServer(0);
+        server = new ChatAppServer(0, InMemoryDatasource.createTestDataSource());
         server.start();
     }
 
