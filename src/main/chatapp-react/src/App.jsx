@@ -4,9 +4,14 @@ import './App.css'
 function App() {
 
     const [currentUser, setCurrentUser] = useState([]);
+    const [currentGroup, setCurrentGroup] = useState([]);
 
     function SelectUser(user) {
         setCurrentUser(user);
+    }
+
+    function SelectGroup(group) {
+        setCurrentGroup(group);
     }
 
     function ListUsers() {
@@ -33,11 +38,21 @@ function App() {
         </div>
     }
 
+    function ListCurrentGroups() {
+        return <div className={"user_group"} style={{fontWeight: "-moz-initial"}}>
+            <h1>Message Groups</h1>
+            <ul>
+                {group.map(group => <button onClick={() => SelectGroup(group)} className={"single_group"} >{currentUser.group}</button> )}
+            </ul>
+        </div>
+    }
+
 
 
     return (
         <div className="App">
             <ListUsers/>
+            <ListCurrentGroups/>
         </div>
     )
 }
