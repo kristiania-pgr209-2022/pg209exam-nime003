@@ -9,7 +9,7 @@ import no.kristiania.chatapp.db.UserDao;
 import java.sql.SQLException;
 import java.util.List;
 
-@Path("/user")
+@Path("/")
 public class UserEndpoint {
 
     @Inject

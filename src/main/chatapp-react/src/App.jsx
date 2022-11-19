@@ -16,12 +16,12 @@ function App() {
 
     function ListUsers() {
         const [loading, setLoading] = useState(true);
-        const [username, setUsername] = useState([]);
+        const [userList, setUserList] = useState([]);
 
         useEffect(() => {
             (async () => {
                 const res = await fetch("api/user");
-                setUsername(await res.json());
+                setUserList(await res.json());
                 setLoading(false);
             })()
         }, [])
@@ -33,31 +33,31 @@ function App() {
         return <div className={"user_grid"} style={{fontWeight: "bold"}}>
                 <h1>Users</h1>
                 <ul>
-                    {username.map(user => <button onClick={() => SelectUser(user)} className={"single_user"} >{user.username}</button>)}
+                    {userList.map(user => <button onClick={() => SelectUser(user)} className={"single_user"} >{user.username}</button>)}
                 </ul>
         </div>
     }
 
     function ListCurrentGroups() {
         const [loading, setLoading] = useState(true);
-        const [group, setGroup] = useState([]);
+        const [groupList, setGroupList] = useState([]);
 
         useEffect(() => {
             (async () => {
                 const res = await fetch("api/group");
-                setGroup(await res.json());
+                setGroupList(await res.json());
                 setLoading(false);
             })()
         }, [])
 
         if (loading) {
-            return <div>Loading users...</div>
+            return <div>Loading groups...</div>
         }
 
         return <div className={"user_group"} style={{fontWeight: "-moz-initial"}}>
             <h1>Message Groups</h1>
             <ul>
-                {group.map(group => <button onClick={() => SelectGroup(group)} className={"single_group"} >{currentUser.group}</button> )}
+                {groupList.map(group => <button onClick={() => SelectGroup(group)} className={"single_group"} >{group.groupName}</button> )}
             </ul>
         </div>
     }
@@ -65,23 +65,23 @@ function App() {
     function ListGroupMessages() {
 
         const [loading, setLoading] = useState(true);
-        const [message, setMessage] = useState([]);
+        const [messageList, setMessageList] = useState([]);
 
         useEffect(() => {
             (async () => {
-                const res = await fetch("api/group");
-                setMessage(await res.json());
+                const res = await fetch("api/message");
+                setMessageList(await res.json());
                 setLoading(false);
             })()
         }, [])
 
         if (loading) {
-            return <div>Loading users...</div>
+            return <div>Loading messages...</div>
         }
         return <div className={"group_message"} style={{fontWeight: "-moz-initial"}}>
             <h1>Messages in this Group</h1>
             <ul>
-                {message.map(message => <div className={"single_message"} >{currentGroup.message}</div> )}
+                {messageList.map(message => <div className={"single_message"} >{currentGroup.message}</div> )}
             </ul>
         </div>
     }
