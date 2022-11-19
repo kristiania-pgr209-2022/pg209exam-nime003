@@ -81,7 +81,7 @@ function App() {
         return <div className={"group_message"} style={{fontWeight: "-moz-initial"}}>
             <h1>Messages in this Group</h1>
             <ul>
-                {messageList.map(message => <div className={"single_message"} >{currentGroup.message}</div> )}
+                {messageList.map(message => <div className={"single_message"} >{message.message}</div> )}
             </ul>
         </div>
     }

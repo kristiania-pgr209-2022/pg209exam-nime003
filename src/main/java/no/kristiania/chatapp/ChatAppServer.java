@@ -2,6 +2,7 @@ package no.kristiania.chatapp;
 
 import no.kristiania.chatapp.db.Database;
 import no.kristiania.chatapp.endpoints.GroupEndpointConfig;
+import no.kristiania.chatapp.endpoints.MessageEndpointConfig;
 import no.kristiania.chatapp.endpoints.UserEndpointConfig;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -44,6 +45,7 @@ public class ChatAppServer {
 
         wContext.addServlet(new ServletHolder(new ServletContainer(new UserEndpointConfig(dataSource))), "/api/user/*");
         wContext.addServlet(new ServletHolder(new ServletContainer(new GroupEndpointConfig(dataSource))), "/api/group/*");
+        wContext.addServlet(new ServletHolder(new ServletContainer(new MessageEndpointConfig(dataSource))), "/api/message/*");
 
         chatAppServer.setHandler(wContext);
     }
