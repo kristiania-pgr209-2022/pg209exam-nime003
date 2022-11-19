@@ -2,6 +2,7 @@ package no.kristiania.chatapp;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import no.kristiania.chatapp.db.Database;
 import no.kristiania.chatapp.db.InMemoryDatasource;
 import no.kristiania.chatapp.db.jdbc.SampleData;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,6 +66,11 @@ public class ChatAppServerTest {
                 .contains("\"username\":\""+ user.getUsername() + "\"");
     }
 
+    @Test
+    void populateDatabaseTest() throws SQLException {
+        InMemoryDatasource inMemoryDatasource = new InMemoryDatasource();
+        inMemoryDatasource.populateDatabase(InMemoryDatasource.createTestDataSource());
+    }
     private HttpURLConnection openConnection(String spec) throws IOException {
         return (HttpURLConnection) new URL(server.getURL(), spec).openConnection();
     }
@@ -72,6 +79,17 @@ public class ChatAppServerTest {
         assertThat(connection.getResponseCode())
                 .as(connection.getResponseMessage())
                 .isEqualTo(expectedResponse);
+    }
 
+    // main used for testing react etc.
+    public static void main(String[] args) throws Exception {
+        var testDataSource = new InMemoryDatasource();
+        testDataSource.populateDatabase(InMemoryDatasource.createTestDataSource());
+        int port = Optional.ofNullable(System.getenv("HTTP_PLATFORM_PORT"))
+                .map(Integer::parseInt)
+                .orElse(9090);
+        var chatAppServer = new ChatAppServer(port, InMemoryDatasource.createTestDataSource());
+        chatAppServer.start();
+        logger.warn("Starting at port {}", chatAppServer.getURL());
     }
 }

@@ -20,15 +20,18 @@ function ListUsers() {
             setUsername(await res.json());
             setLoading(false);
         })()
-    })
+    }, [])
 
     if (loading) {
         return <div>Loading users...</div>
     }
-    return <ul>
-        <div className={"usergrid"} style={{fontWeight: "bold"}}>Users</div>
-        {username.map(p => <div>{username}</div>)}
-    </ul>
+
+    return <div className={"user_grid"} style={{fontWeight: "bold"}}>
+            <h1>Users</h1>
+            <ul>
+                {username.map(user => <div>{user.username}</div>)}
+            </ul>
+    </div>
 }
 
 export default App

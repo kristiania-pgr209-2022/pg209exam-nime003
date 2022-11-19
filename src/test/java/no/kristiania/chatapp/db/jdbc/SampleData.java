@@ -21,21 +21,25 @@ public class SampleData {
     public ArrayList<User> sampleUsers(int howMany){
         var list = new ArrayList<User>();
         for (int i = 0; i < howMany; i++){
-            list.add(sampleUser());
+            var sampleUser = sampleUser();
+            sampleUser.setUsername(sampleUser.getUsername() + i);
+            list.add(sampleUser);
         }
         return list;
     }
 
     public Group sampleGroup(){
         var group = new Group();
-        group.setGroupName(pickOne("Klassechat", "chattern", "Ipsum lorem", "amet sit dolor"));
+        group.setGroupName(pickOne("Klassechat", "chattern", "lorem Ipsum", "amet sit dolor"));
         return group;
     }
 
     public ArrayList<Group> sampleGroups(int howMany) {
         var list = new ArrayList<Group>();
         for (int i = 0; i < howMany; i++) {
-            list.add(sampleGroup());
+            var sampleGroup = sampleGroup();
+            sampleGroup.setGroupName(sampleGroup.getGroupName() + i);
+            list.add(sampleGroup);
         }
         return list;
     }
