@@ -3,8 +3,10 @@ package no.kristiania.chatapp.endpoints;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import no.kristiania.chatapp.db.Group;
 import no.kristiania.chatapp.db.Message;
 import no.kristiania.chatapp.db.MessageDao;
 
@@ -22,4 +24,10 @@ public class MessageEndpoint {
         return messageDao.retrieveAllMessages();
     }
 
+    @Path("/{groupId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Message> retrieveAllGroupsByUser(@PathParam("groupId")long groupId) throws SQLException {
+        return messageDao.retrieveAllMessagesByGroupId(groupId);
+    }
 }

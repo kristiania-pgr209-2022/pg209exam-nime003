@@ -13,4 +13,6 @@ public interface MessageDao {
     List<Message> retrieveAllMessagesByUserId(long userId) throws SQLException;
 
     Message retrieveMessage(long id) throws SQLException;
+
+    List<Message> retrieveAllMessagesByGroupId(long groupId) throws SQLException;
 }

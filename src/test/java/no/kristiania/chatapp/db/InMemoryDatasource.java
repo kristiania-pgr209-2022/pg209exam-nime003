@@ -51,7 +51,8 @@ public class InMemoryDatasource {
 
         // create some sample messages
         for (var user : users) {
-            for (var group : groups) {
+            var groupsUserIsIn = groupDao.retrieveGroupByUserId(user.getId());
+            for (var group : groupsUserIsIn) {
                 var sampleMessage = sampleData.sampleMessage(user.getId(), group.getId());
                 sampleMessage.setMessage(user.getUsername() + " sample message in " + group.getGroupName());
                 messageDao.save(sampleMessage);

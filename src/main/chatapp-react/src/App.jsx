@@ -69,7 +69,7 @@ function App() {
 
         useEffect(() => {
             (async () => {
-                const res = await fetch("api/message");
+                const res = await fetch("api/message/" + currentGroup.id);
                 setMessageList(await res.json());
                 setLoading(false);
             })()

@@ -1,6 +1,7 @@
 package no.kristiania.chatapp.db.jdbc;
 
 import jakarta.inject.Inject;
+import no.kristiania.chatapp.db.Group;
 import no.kristiania.chatapp.db.Message;
 import no.kristiania.chatapp.db.MessageDao;
 
@@ -52,6 +53,16 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
             try (var stmt = conn.prepareStatement("select * from message where id = ?")) {
                 stmt.setLong(1, id);
                 return collectSingleResult(stmt, JdbcMessageDao::readMessage);
+            }
+        }
+    }
+
+    @Override
+    public List<Message> retrieveAllMessagesByGroupId(long groupId) throws SQLException {
+        try (var conn = dataSource.getConnection()){
+            try (var stmt = conn.prepareStatement("select * from message where group_id = ?")){
+                stmt.setLong(1, groupId);
+                return collectQueryResult(stmt, JdbcMessageDao::readMessage);
             }
         }
     }
