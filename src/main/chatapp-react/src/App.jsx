@@ -39,10 +39,49 @@ function App() {
     }
 
     function ListCurrentGroups() {
+        const [loading, setLoading] = useState(true);
+        const [group, setGroup] = useState([]);
+
+        useEffect(() => {
+            (async () => {
+                const res = await fetch("api/group");
+                setGroup(await res.json());
+                setLoading(false);
+            })()
+        }, [])
+
+        if (loading) {
+            return <div>Loading users...</div>
+        }
+
         return <div className={"user_group"} style={{fontWeight: "-moz-initial"}}>
             <h1>Message Groups</h1>
             <ul>
                 {group.map(group => <button onClick={() => SelectGroup(group)} className={"single_group"} >{currentUser.group}</button> )}
+            </ul>
+        </div>
+    }
+
+    function ListGroupMessages() {
+
+        const [loading, setLoading] = useState(true);
+        const [message, setMessage] = useState([]);
+
+        useEffect(() => {
+            (async () => {
+                const res = await fetch("api/group");
+                setMessage(await res.json());
+                setLoading(false);
+            })()
+        }, [])
+
+        if (loading) {
+            return <div>Loading users...</div>
+        }
+        return <div className={"group_message"} style={{fontWeight: "-moz-initial"}}>
+            <h1>Messages in this Group</h1>
+            <ul>
+                {message.map(message => <div className={"single_message"} >{currentGroup.message}</div> )}
             </ul>
         </div>
     }
@@ -53,6 +92,7 @@ function App() {
         <div className="App">
             <ListUsers/>
             <ListCurrentGroups/>
+            <ListGroupMessages/>
         </div>
     )
 }
