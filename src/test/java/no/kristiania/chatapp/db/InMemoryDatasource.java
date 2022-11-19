@@ -6,8 +6,11 @@ import org.h2.jdbcx.JdbcDataSource;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.Random;
 
 public class InMemoryDatasource {
+
+
     public static DataSource createTestDataSource() {
         var dataSource = new JdbcDataSource();
         dataSource.setUrl("jdbc:h2:mem:DaoTest;DB_CLOSE_DELAY=-1;MODE=MSSQLServer");
@@ -16,7 +19,10 @@ public class InMemoryDatasource {
         return dataSource;
     }
 
+
     public void populateDatabase(DataSource dataSource) throws SQLException {
+        Random random = new Random();
+
         JdbcUserDao userDao = new JdbcUserDao(dataSource);
         JdbcGroupDao groupDao = new JdbcGroupDao(dataSource);
         JdbcMessageDao messageDao = new JdbcMessageDao(dataSource);
@@ -32,11 +38,14 @@ public class InMemoryDatasource {
 
         // connects all users and groups
         for (var group : groups) {
-            var link = new UserGroupLink();
-            link.setGroupId(group.getId());
             for (var user : users) {
-                link.setUserId(user.getId());
-                linkDao.save(link);
+                var shouldAdd = random.nextBoolean();
+               if (shouldAdd){
+                   var link = new UserGroupLink();
+                   link.setGroupId(group.getId());
+                   link.setUserId(user.getId());
+                   linkDao.save(link);
+               }
             }
         }
 

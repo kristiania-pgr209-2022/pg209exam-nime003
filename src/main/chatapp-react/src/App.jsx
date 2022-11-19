@@ -44,7 +44,7 @@ function App() {
 
         useEffect(() => {
             (async () => {
-                const res = await fetch("api/group");
+                const res = await fetch("api/group/"    + currentUser.id);
                 setGroupList(await res.json());
                 setLoading(false);
             })()
