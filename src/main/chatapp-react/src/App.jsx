@@ -29,7 +29,7 @@ function ListUsers() {
     return <div className={"user_grid"} style={{fontWeight: "bold"}}>
             <h1>Users</h1>
             <ul>
-                {username.map(user => <div>{user.username}</div>)}
+                {username.map(user => <div className={"single_user"}>{user.username}</div>)}
             </ul>
     </div>
 }

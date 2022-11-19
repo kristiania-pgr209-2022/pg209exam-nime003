@@ -4,3 +4,13 @@
   padding: 2rem;
   text-align: center;
 }
+
+.user_grid{
+  display: flex;
+}
+ul{
+  display: flex;
+}
+.single_user{
+  padding: 10px;
+}
