@@ -1,8 +1,6 @@
 # PG209 Backend programmering eksamen
 
 ## Sjekkliste for innleveringen
-github link:
-- https://github.com/kristiania-pgr209-2022/pg209exam-nime003/actions/runs/
 
 azure links:
 - https://pgr209exam2022-mebu.azurewebsites.net/
