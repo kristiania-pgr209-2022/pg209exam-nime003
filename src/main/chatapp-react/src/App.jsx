@@ -47,6 +47,35 @@ function App() {
         })
     }
 
+    function EditUser() {
+        const [newUsername, setNewUsername] = useState("");
+        const [newEmail, setNewEmail] = useState("");
+        const [newPassword, setNewPassword] = useState("");
+
+
+        async function handleUpdate(e) {
+            e.preventDefault();
+            if (newUsername !== "") {
+                await fetch("/api/user/update_user", {
+                    method: "post",
+                    body: JSON.stringify({id : currentUser.id, username : newUsername, password : newPassword, email : newEmail}),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then(forceUpdateUsers);
+            }
+        }
+
+        return <div>
+            <form onSubmit={handleUpdate}>
+                <div><input type={"text"} placeholder={"new Username"} value={newUsername} onChange={event => {setNewUsername(event.target.value)}}/></div>
+                <div><input type={"text"} placeholder={"new Email"} value={newEmail} onChange={event => {setNewEmail(event.target.value)}}/></div>
+                <div><input type={"text"} placeholder={"new Password"} value={newPassword} onChange={event => {setNewPassword(event.target.value)}}/></div>
+                <button>update your current User!</button>
+            </form>
+        </div>
+    }
+
 
     function ListUsers() {
         const [loading, setLoading] = useState(true);
@@ -67,13 +96,14 @@ function App() {
         function CreateUser() {
             const [username, setUsername] = useState("");
             const [password, setPassword] = useState("");
+            const [email, setEmail] = useState([""]);
 
             async function HandleSubmit(e) {
                 e.preventDefault();
                 if (username !== ""){
                     await fetch("/api/user", {
                         method: "post",
-                        body: JSON.stringify({username, password}),
+                        body: JSON.stringify({username, password, email}),
                         headers: {
                             "Content-Type": "application/json"
                         }
@@ -84,6 +114,7 @@ function App() {
             return <div>
                 <form onSubmit={HandleSubmit}>
                     <div><input type={"text"} placeholder={"Username"} value={username} onChange={event => {setUsername(event.target.value)}}/></div>
+                    <div><input type={"text"} placeholder={"Email"} value={email} onChange={event => {setEmail(event.target.value)}}/></div>
                     <div><input type={"text"} placeholder={"Password"} value={password} onChange={event => {setPassword(event.target.value)}}/></div>
                     <button>Create User</button>
                 </form>
@@ -93,7 +124,7 @@ function App() {
         return <div className={"user_div"}>
             <CreateUser/>
             <div className={"user_grid"} style={{fontWeight: "bold"}}>
-                <h1>Users</h1>
+                <h1>Current user: {currentUser.username}</h1>
                 <ul>
                     {userList.map(user => <button onClick={() => {SelectUser(user); SelectGroup(null)}} className={"single_user"}>{user.username}</button>)}
                 </ul>
@@ -176,6 +207,7 @@ function App() {
         }
 
         return <div className={"message_groups"} style={{fontWeight: "-moz-initial"}}>
+            <EditUser/>
             <JoinGroup/>
             <h1>Message Groups</h1>
             <ul>

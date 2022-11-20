@@ -26,4 +26,12 @@ public class UserEndpoint {
     public void saveUser(User user) throws SQLException {
         userDao.save(user);
     }
+
+    @Path("/update_user")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public User updateUser(User user) throws SQLException {
+        userDao.updateUser(user);
+        return user;
+    }
 }
