@@ -9,8 +9,6 @@
   display: flex;
 }
 
-
-
 .message_list{
   display: flex;
   flex-direction: column-reverse;

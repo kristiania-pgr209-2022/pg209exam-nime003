@@ -1,6 +1,8 @@
 import {useEffect, useReducer, useState} from 'react'
 import './App.css'
 
+
+
 function App() {
 
     const [currentUser, setCurrentUser] = useState([]);
@@ -32,12 +34,40 @@ function App() {
             return <div>Loading users...</div>
         }
 
+        function CreateUser() {
+            const [username, setUsername] = useState("");
+            const [password, setPassword] = useState("");
 
-        return <div className={"user_grid"} style={{fontWeight: "bold"}}>
+            async function HandleSubmit(e) {
+                e.preventDefault();
+                if (username !== ""){
+                    await fetch("/api/user", {
+                        method: "post",
+                        body: JSON.stringify({username, password}),
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }).then(forceUpdateUsers);
+                }
+            }
+
+            return <div>
+                <form onSubmit={HandleSubmit}>
+                    <div>Username: <input type={"text"} value={username} onChange={event => {setUsername(event.target.value)}}/></div>
+                    <div>Password: <input type={"text"} value={password} onChange={event => {setPassword(event.target.value)}}/></div>
+                    <button>Create User</button>
+                </form>
+            </div>
+        }
+
+        return <div className={"user_div"}>
+            <CreateUser/>
+            <div className={"user_grid"} style={{fontWeight: "bold"}}>
                 <h1>Users</h1>
                 <ul>
                     {userList.map(user => <button onClick={() => {SelectUser(user); SelectGroup(null)}} className={"single_user"}>{user.username}</button>)}
                 </ul>
+            </div>
         </div>
     }
 
@@ -57,7 +87,67 @@ function App() {
             return <div>Select a user to see the groups they are in</div>
         }
 
-        return <div className={"user_group"} style={{fontWeight: "-moz-initial"}}>
+        function JoinGroup() {
+            const [groupName, setGroupName] = useState("");
+            const [allGroupsList, setAllGroupsList] = useState([]);
+            const [groupId, setGroupId] = useState();
+
+             function HandleSubmit(e) {
+                e.preventDefault();
+
+                function GetAllGroupsList() {
+                    return fetch("/api/group")
+                        .then((response) => response.json())
+                }
+
+                function CreateGroup(groupName) {
+                    return fetch("/api/group", {
+                        method: "post",
+                        body: JSON.stringify({groupName}),
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }).then((response) =>
+                        response.json())
+                }
+
+                function FindGroup(groupName, groupList) {
+                    for (const i in groupList) {
+                        if (groupName === groupList[i].groupName) {
+                            setGroupId(groupList[i].id);
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                 function FindOrCreateGroup() {
+                    if (groupName !== "") {
+                        GetAllGroupsList().then(groups => setAllGroupsList(groups));
+                        if(!FindGroup(groupName, allGroupsList)){
+                            return CreateGroup(groupName).then(group => setGroupId(group.id));
+                        }
+                    }
+                }
+
+
+                 function JoinGroup() {
+                    FindOrCreateGroup();
+                }
+
+                JoinGroup();
+            }
+
+            return <div className={"join_group_div"}>
+                <form onSubmit={HandleSubmit}>
+                    <div><input type={"text"} value={groupName} onChange={event => {setGroupName(event.target.value)}}/></div>
+                    <button>Join or create group</button>
+                </form>
+            </div>
+        }
+
+        return <div className={"message_groups"} style={{fontWeight: "-moz-initial"}}>
+            <JoinGroup/>
             <h1>Message Groups</h1>
             <ul>
                 {groupList.map(group => <button onClick={() => SelectGroup(group)} className={"single_group"} >{group.groupName}</button> )}
@@ -105,31 +195,7 @@ function App() {
         </div>
     }
 
-    function CreateUser() {
-        const [username, setUsername] = useState("");
-        const [password, setPassword] = useState("");
 
-        async function HandleSubmit(e) {
-            e.preventDefault();
-            if (username !== ""){
-                await fetch("/api/user", {
-                    method: "post",
-                    body: JSON.stringify({username, password}),
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }).then(forceUpdateUsers);
-            }
-        }
-
-        return <div>
-            <form onSubmit={HandleSubmit}>
-                <div>Username: <input type={"text"} value={username} onChange={event => {setUsername(event.target.value)}}/></div>
-                <div>Password: <input type={"text"} value={password} onChange={event => {setPassword(event.target.value)}}/></div>
-                <button>Create User</button>
-            </form>
-        </div>
-    }
 
     function SendMessage(){
         const [messageText, setMessageText] = useState("");
@@ -159,7 +225,6 @@ function App() {
 
     return (
         <div className="App">
-            <CreateUser/>
             <ListUsers/>
             <ListCurrentGroups/>
             <ListGroupMessages/>
