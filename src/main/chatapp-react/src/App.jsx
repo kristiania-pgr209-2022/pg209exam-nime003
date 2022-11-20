@@ -19,6 +19,35 @@ function App() {
         setCurrentGroup(group);
     }
 
+    function ConnectGroup(groupId, userId) {
+        return fetch("/api/link", {
+            method: "post",
+            body: JSON.stringify({userId, groupId}),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    }
+
+    function UsersInGroup(groupId) {
+        return fetch("/api/group/" + groupId + "/users")
+            .then(response => response.json());
+    }
+
+    function AlreadyInGroup(groupId, user) {
+        let bool = false;
+        return UsersInGroup(groupId).then(users => {
+            for(const i in users){
+                if(users[i].id === user.id){
+                    bool = true;
+                }
+            }
+        }).then(() => {
+            return bool;
+        })
+    }
+
+
     function ListUsers() {
         const [loading, setLoading] = useState(true);
         const [userList, setUserList] = useState([]);
@@ -54,8 +83,8 @@ function App() {
 
             return <div>
                 <form onSubmit={HandleSubmit}>
-                    <div>Username: <input type={"text"} value={username} onChange={event => {setUsername(event.target.value)}}/></div>
-                    <div>Password: <input type={"text"} value={password} onChange={event => {setPassword(event.target.value)}}/></div>
+                    <div><input type={"text"} placeholder={"Username"} value={username} onChange={event => {setUsername(event.target.value)}}/></div>
+                    <div><input type={"text"} placeholder={"Password"} value={password} onChange={event => {setPassword(event.target.value)}}/></div>
                     <button>Create User</button>
                 </form>
             </div>
@@ -118,34 +147,6 @@ function App() {
                          response.json())
                  }
 
-                 function ConnectGroup(groupId, userId) {
-                     return fetch("/api/link", {
-                         method: "post",
-                         body: JSON.stringify({userId, groupId}),
-                         headers: {
-                             "Content-Type": "application/json"
-                         }
-                     })
-                 }
-
-                 function UsersInGroup(groupId) {
-                     return fetch("/api/group/" + groupId + "/users")
-                         .then(response => response.json());
-                 }
-
-                 function AlreadyInGroup(groupId, user) {
-                     let bool = false;
-                     return UsersInGroup(groupId).then(users => {
-                        for(const i in users){
-                            if(users[i].id === user.id){
-                                bool = true;
-                            }
-                        }
-                    }).then(() => {
-                        return bool;
-                    })
-                 }
-
                  if(groupName !== ""){
                      let grpId;
                      GetAllGroups().then(allGroupsList => {
@@ -168,7 +169,7 @@ function App() {
 
             return <div className={"join_group_div"}>
                 <form onSubmit={HandleSubmit}>
-                    <div><input type={"text"} value={groupName} onChange={event => {setGroupName(event.target.value)}}/></div>
+                    <div><input type={"text"} placeholder={"Group name"} value={groupName} onChange={event => {setGroupName(event.target.value)}}/></div>
                     <button>Join or create group</button>
                 </form>
             </div>
@@ -182,6 +183,35 @@ function App() {
             </ul>
         </div>
     }
+
+    function InviteToGroup() {
+        const [userList, setUserList] = useState([]);
+        const [user, setUser] = useState([]);
+
+        useEffect(() => {
+            (async () => {
+                const res = await fetch("api/user");
+                setUserList(await res.json());
+            })()
+        }, [])
+
+
+        function HandleInvite(user) {
+            AlreadyInGroup(currentGroup.id, user).then(inGroupBool =>{
+                if(!inGroupBool){
+                    ConnectGroup(currentGroup.id, user.id).then(forceUpdateGroups);
+                }
+            })
+        }
+
+        return <div>
+            <div>Invite user to current group by clicking on them!</div>
+            <select size={4}>
+                {userList.map(user => <option onClick={() => HandleInvite(user)}>{user.username}</option>)}
+            </select>
+        </div>
+    }
+
 
 
     function ListGroupMessages() {
@@ -204,7 +234,8 @@ function App() {
         }
         return <div className={"group_div"} style={{fontWeight: "-moz-initial"}}>
             <div>Members: {groupUserList.map(user => <div>{user.username}</div>)}</div>
-            <h1>Messages in this Group</h1>
+            <InviteToGroup/>
+            <h1>Messages in Group: {currentGroup.groupName}</h1>
             <div className={"message_div"}>
                 <SendMessage/>
                 <ul className={"message_list"}>
@@ -252,7 +283,6 @@ function App() {
             </form>
         </div>;
     }
-
 
     return (
         <div className="App">
