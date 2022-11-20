@@ -177,7 +177,7 @@
                     <schemaVersion>v2</schemaVersion>
                     <subscriptionId></subscriptionId>
                     <resourceGroup>${project.groupId}</resourceGroup>
-                    <appName>no.kristiania.pgr209exam2022-${user.name}</appName>
+                    <appName>pgr209exam2022-${user.name}</appName>
                     <pricingTier>F1</pricingTier>
                     <region>westeurope</region>
                     <runtime>
