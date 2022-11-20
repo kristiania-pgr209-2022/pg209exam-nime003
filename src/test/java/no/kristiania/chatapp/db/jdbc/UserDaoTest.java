@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.extractProperty;
 
 public class UserDaoTest {
     private static UserDao dao;
@@ -46,5 +45,14 @@ public class UserDaoTest {
                         .map(User::getId)
                         .collect(Collectors.toList()))
                 .isNotSameAs(users);
+    }
+    @Test
+    void shouldUpdateUser() throws SQLException {
+        var user = users.get(1);
+        var userTemp = new User();
+        userTemp.setId(user.getId());
+        userTemp.setUsername("hanskaare");
+        dao.updateUser(userTemp);
+        assertThat(dao.retrieveUser(user.getId()).getUsername()).isNotSameAs(user.getUsername());
     }
 }

@@ -37,6 +37,19 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
             }
         }
     }
+    @Override
+    public void updateUser(User user) throws SQLException {
+        try (var conn = dataSource.getConnection()) {
+            var sql = "UPDATE [user] set username = ?, email = ?, password = ? WHERE id = ?";
+            try (var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, user.getUsername());
+                stmt.setString(2, user.getEmail());
+                stmt.setString(3, user.getPassword());
+                stmt.setLong(4, user.getId());
+                stmt.executeUpdate();
+            }
+        }
+    }
 
     @Override
     public void save(User user) throws SQLException {
