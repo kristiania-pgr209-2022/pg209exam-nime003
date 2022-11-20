@@ -1,0 +1,28 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.user_grid.ul{
+  display: flex;
+}
+
+.message_list{
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.single_message{
+  border: brown 1px;
+}
+
+.message_sender{
+  font-weight: bold;
+}
+
+.message_timestamp{
+  font-size: xx-small;
+}
+
