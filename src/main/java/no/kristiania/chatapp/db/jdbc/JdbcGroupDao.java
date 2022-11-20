@@ -3,6 +3,7 @@ package no.kristiania.chatapp.db.jdbc;
 import jakarta.inject.Inject;
 import no.kristiania.chatapp.db.Group;
 import no.kristiania.chatapp.db.GroupDao;
+import no.kristiania.chatapp.db.User;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -59,6 +60,19 @@ public class JdbcGroupDao extends AbstractJdbcDao implements GroupDao {
                     "where ugl.user_id = ?")){
                 stmt.setLong(1, userId);
                 return collectQueryResult(stmt, JdbcGroupDao::readGroup);
+            }
+        }
+    }
+
+    @Override
+    public List<User> retrieveAllUsers(long groupId) throws SQLException {
+        try (var conn = dataSource.getConnection()){
+            try (var stmt = conn.prepareStatement("select [user].* from [user]" +
+                    " inner join user_group_link ugl on [user].id = ugl.user_id" +
+                    " where ugl.group_id = ?;"
+            )){
+                stmt.setLong(1, groupId);
+                return collectQueryResult(stmt, JdbcUserDao::readUser);
             }
         }
     }

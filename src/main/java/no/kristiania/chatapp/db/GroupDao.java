@@ -11,4 +11,6 @@ public interface GroupDao {
     Group retrieveGroup(long id) throws SQLException;
 
     List<Group> retrieveGroupByUserId(long userId) throws SQLException;
+
+    List<User> retrieveAllUsers(long groupId) throws SQLException;
 }

@@ -55,7 +55,7 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
         }
     }
 
-    private static User readUser(ResultSet rs) throws SQLException {
+    static User readUser(ResultSet rs) throws SQLException {
         var user = new User();
         user.setId(rs.getLong("id"));
         user.setUsername(rs.getString("username"));
