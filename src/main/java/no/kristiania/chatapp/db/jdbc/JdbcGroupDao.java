@@ -15,7 +15,7 @@ public class JdbcGroupDao extends AbstractJdbcDao implements GroupDao {
     private final DataSource dataSource;
 
     @Inject
-    public JdbcGroupDao(DataSource dataSource){this.dataSource = dataSource;}
+    public JdbcGroupDao(DataSource dataSource) { this.dataSource = dataSource; }
 
     @Override
     public void save(Group group) throws SQLException {
@@ -36,7 +36,7 @@ public class JdbcGroupDao extends AbstractJdbcDao implements GroupDao {
 
     @Override
     public List<Group> retrieveAllGroups() throws SQLException {
-        try (var conn = dataSource.getConnection()){
+        try (var conn = dataSource.getConnection()) {
             try (var stmt = conn.prepareStatement("select * from [group]")){
                 return collectQueryResult(stmt, JdbcGroupDao::readGroup);
             }
@@ -44,8 +44,8 @@ public class JdbcGroupDao extends AbstractJdbcDao implements GroupDao {
     }
     @Override
     public Group retrieveGroup(long id) throws SQLException {
-        try (var conn = dataSource.getConnection()){
-            try (var stmt = conn.prepareStatement("select * from [group] where id = ?")){
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.prepareStatement("select * from [group] where id = ?")) {
                 stmt.setLong(1, id);
                 return collectSingleResult(stmt, JdbcGroupDao::readGroup);
             }
@@ -54,10 +54,10 @@ public class JdbcGroupDao extends AbstractJdbcDao implements GroupDao {
 
     @Override
     public List<Group> retrieveGroupByUserId(long userId) throws SQLException {
-        try (var conn = dataSource.getConnection()){
+        try (var conn = dataSource.getConnection()) {
             try (var stmt = conn.prepareStatement("select [group].id, group_name " +
                     "from [group] inner join user_group_link ugl on [group].id = ugl.group_id " +
-                    "where ugl.user_id = ?")){
+                    "where ugl.user_id = ?")) {
                 stmt.setLong(1, userId);
                 return collectQueryResult(stmt, JdbcGroupDao::readGroup);
             }
@@ -66,7 +66,7 @@ public class JdbcGroupDao extends AbstractJdbcDao implements GroupDao {
 
     @Override
     public List<User> retrieveAllUsers(long groupId) throws SQLException {
-        try (var conn = dataSource.getConnection()){
+        try (var conn = dataSource.getConnection()) {
             try (var stmt = conn.prepareStatement("select [user].* from [user]" +
                     " inner join user_group_link ugl on [user].id = ugl.user_id" +
                     " where ugl.group_id = ?;"

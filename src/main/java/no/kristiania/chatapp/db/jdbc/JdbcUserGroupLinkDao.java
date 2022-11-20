@@ -1,7 +1,6 @@
 package no.kristiania.chatapp.db.jdbc;
 
 import jakarta.inject.Inject;
-import no.kristiania.chatapp.db.User;
 import no.kristiania.chatapp.db.UserGroupLink;
 import no.kristiania.chatapp.db.UserGroupLinkDao;
 
@@ -28,7 +27,7 @@ public class JdbcUserGroupLinkDao extends AbstractJdbcDao implements UserGroupLi
                 stmt.setLong(2, link.getGroupId());
                 stmt.executeUpdate();
 
-                try(var generatedKeys = stmt.getGeneratedKeys()){
+                try(var generatedKeys = stmt.getGeneratedKeys()) {
                     generatedKeys.next();
                     link.setId(generatedKeys.getLong(1));
                 }
@@ -39,8 +38,8 @@ public class JdbcUserGroupLinkDao extends AbstractJdbcDao implements UserGroupLi
 
     @Override
     public List<UserGroupLink> retrieveAllByUserId(long userId) throws SQLException {
-        try (var conn = dataSource.getConnection()){
-            try (var stmt = conn.prepareStatement("select * from user_group_link where user_id = ?")){
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.prepareStatement("select * from user_group_link where user_id = ?")) {
                 stmt.setLong(1, userId);
                 return collectQueryResult(stmt, JdbcUserGroupLinkDao::readUserGroupLink);
             }
@@ -49,8 +48,8 @@ public class JdbcUserGroupLinkDao extends AbstractJdbcDao implements UserGroupLi
 
     @Override
     public List<UserGroupLink> retrieveAllByGroupId(long groupId) throws SQLException {
-        try (var conn = dataSource.getConnection()){
-            try (var stmt = conn.prepareStatement("select * from user_group_link where group_id = ?")){
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.prepareStatement("select * from user_group_link where group_id = ?")) {
                 stmt.setLong(1, groupId);
                 return collectQueryResult(stmt, JdbcUserGroupLinkDao::readUserGroupLink);
             }
