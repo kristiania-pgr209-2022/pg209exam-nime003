@@ -84,21 +84,24 @@ function App() {
         if (loading) {
             return <div>Select a group to see messages</div>
         }
-        return <div className={"group_message"} style={{fontWeight: "-moz-initial"}}>
+        return <div className={"group_div"} style={{fontWeight: "-moz-initial"}}>
             <div>Members: {groupUserList.map(user => <div>{user.username}</div>)}</div>
             <h1>Messages in this Group</h1>
-            <ul>
-                {messageList.map(message =><div className={"message_div"}>
-                    <div className={"message_sender"}> {
-                        // this "" is super funky, because if you don't have it the site crashes randomly when selecting a group
-                        // with the error "g.find is undefined".
-                        (groupUserList.find(user => user.id === message.userId) || "").username
-                    }
-                    </div>
-                    <div className={"message_body"} >{message.message}</div>
-                </div>)}
-            </ul>
-            <SendMessage/>
+            <div className={"message_div"}>
+                <SendMessage/>
+                <ul className={"message_list"}>
+                    {messageList.map(message => <div className={"single_message"}>
+                        <div className={"message_sender"}> {
+                            // this "" is super funky, because if you don't have it the site crashes randomly when selecting a group
+                            // with the error "g.find is undefined".
+                            (groupUserList.find(user => user.id === message.userId) || "").username
+                        }
+                        </div>
+                        <div className={"message_body"} >{message.message}</div>
+                        <div className={"message_timestamp"}>{message.dateTimeSent}</div>
+                    </div>)}
+                </ul>
+            </div>
         </div>
     }
 

@@ -5,12 +5,26 @@
   text-align: center;
 }
 
-.user_grid{
+.user_grid.ul{
   display: flex;
 }
-ul{
+
+
+
+.message_list{
   display: flex;
+  flex-direction: column-reverse;
 }
-.single_user{
-  padding: 10px;
+
+.single_message{
+  border: brown 1px;
 }
+
+.message_sender{
+  font-weight: bold;
+}
+
+.message_timestamp{
+  font-size: xx-small;
+}
+
