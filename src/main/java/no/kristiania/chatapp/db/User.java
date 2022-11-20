@@ -3,6 +3,7 @@ package no.kristiania.chatapp.db;
 public class User {
     private long id;
     private String username;
+    private String email;
     private String password;
 
     public long getId() {
@@ -20,6 +21,10 @@ public class User {
     public String getUsername() {
         return username;
     }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public String getEmail() { return email; }
 
     public void setPassword(String password) {
         this.password = password;

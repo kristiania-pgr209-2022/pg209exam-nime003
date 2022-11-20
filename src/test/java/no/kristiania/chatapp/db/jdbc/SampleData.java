@@ -14,6 +14,7 @@ public class SampleData {
     public User sampleUser(){
         var user = new User();
         user.setUsername(pickOne("Nils", "Pål", "Ipsum", "lorem"));
+        user.setEmail(pickOne("shemale@gmale.no", "jensarne@yahoo.com", "pålroger@hotmail.kr"));
         user.setPassword(pickOne("sliN", "låP", "Ipsum", "lorem"));
         return user;
     }
