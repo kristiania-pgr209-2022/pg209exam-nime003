@@ -8,9 +8,7 @@ public class Group {
         this.id = id;
     }
 
-    public long getId() {
-        return id;
-    }
+    public long getId() { return id; }
 
     public String getGroupName() {
         return groupName;

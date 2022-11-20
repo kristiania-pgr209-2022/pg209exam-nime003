@@ -21,7 +21,7 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
 
     @Override
     public User retrieveUser(long id) throws SQLException {
-        try (var conn = dataSource.getConnection()){
+        try (var conn = dataSource.getConnection()) {
             try (var stmt = conn.prepareStatement("select * from [user] where id = ?")){
                 stmt.setLong(1, id);
                 return collectSingleResult(stmt, JdbcUserDao::readUser);
@@ -32,7 +32,7 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
     @Override
     public List<User> retrieveAllUsers() throws SQLException {
         try (var conn = dataSource.getConnection()) {
-            try (var stmt = conn.prepareStatement("select * from [user]")){
+            try (var stmt = conn.prepareStatement("select * from [user]")) {
                 return collectQueryResult(stmt, JdbcUserDao::readUser);
             }
         }

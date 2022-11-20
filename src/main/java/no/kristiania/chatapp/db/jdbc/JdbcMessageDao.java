@@ -14,13 +14,13 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
     private final DataSource dataSource;
 
     @Inject
-    public JdbcMessageDao(DataSource dataSource){this.dataSource = dataSource;}
+    public JdbcMessageDao(DataSource dataSource) { this.dataSource = dataSource; }
 
 
     @Override
     public List<Message> retrieveAllMessages() throws SQLException {
-        try (var conn = dataSource.getConnection()){
-            try (var stmt = conn.prepareStatement("select * from message")){
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.prepareStatement("select * from message")) {
                 return collectQueryResult(stmt, JdbcMessageDao::readMessage);
             }
         }
@@ -28,8 +28,8 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
 
     @Override
     public List<Message> getAllMessagesByGroupId(long groupId) throws SQLException {
-        try (var conn = dataSource.getConnection()){
-            try (var stmt = conn.prepareStatement("select * from message where group_id = ?")){
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.prepareStatement("select * from message where group_id = ?")) {
                 stmt.setLong(1, groupId);
                 return collectQueryResult(stmt, JdbcMessageDao::readMessage);
             }
@@ -38,8 +38,8 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
 
     @Override
     public List<Message> retrieveAllMessagesByUserId(long userId) throws SQLException {
-        try (var conn = dataSource.getConnection()){
-            try (var stmt = conn.prepareStatement("select * from message where user_id = ?")){
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.prepareStatement("select * from message where user_id = ?")) {
                 stmt.setLong(1, userId);
                 return collectQueryResult(stmt, JdbcMessageDao::readMessage);
             }
@@ -58,8 +58,8 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
 
     @Override
     public List<Message> retrieveAllMessagesByGroupId(long groupId) throws SQLException {
-        try (var conn = dataSource.getConnection()){
-            try (var stmt = conn.prepareStatement("select * from message where group_id = ?")){
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.prepareStatement("select * from message where group_id = ?")) {
                 stmt.setLong(1, groupId);
                 return collectQueryResult(stmt, JdbcMessageDao::readMessage);
             }
