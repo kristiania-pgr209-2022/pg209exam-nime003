@@ -5,7 +5,8 @@ function App() {
 
     const [currentUser, setCurrentUser] = useState([]);
     const [currentGroup, setCurrentGroup] = useState([]);
-    const [update, forceUpdate] = useReducer(x => x + 1, 0);
+    const [updateUsers, forceUpdateUsers] = useReducer(x => x + 1, 0);
+    const [updateMessages, forceUpdateMessages] = useReducer(x => x + 1, 0);
 
     function SelectUser(user) {
         setCurrentUser(user);
@@ -25,7 +26,7 @@ function App() {
                 setUserList(await res.json());
                 setLoading(false);
             })()
-        }, [update])
+        }, [updateUsers])
 
         if (loading) {
             return <div>Loading users...</div>
@@ -72,18 +73,13 @@ function App() {
 
         useEffect(() => {
             (async () => {
-                const res = await fetch("api/message/" + currentGroup.id);
-                setMessageList(await res.json());
+                const res1 = await fetch("api/message/" + currentGroup.id);
+                setMessageList(await res1.json());
                 setLoading(false);
+                const res2 = await fetch("api/group/" + currentGroup.id + "/users");
+                setGroupUserList(await res2.json());
             })()
-        }, [])
-
-        useEffect(() => {
-            (async () => {
-                const res = await fetch("api/group/" + currentGroup.id + "/users");
-                setGroupUserList(await res.json());
-            })()
-        }, [])
+        }, [updateMessages])
 
         if (loading) {
             return <div>Select a group to see messages</div>
@@ -96,12 +92,13 @@ function App() {
                     <div className={"message_sender"}> {
                         // this "" is super funky, because if you don't have it the site crashes randomly when selecting a group
                         // with the error "g.find is undefined".
-                        (groupUserList.find(user => user.id === message.senderId) || "").username
+                        (groupUserList.find(user => user.id === message.userId) || "").username
                     }
                     </div>
                     <div className={"message_body"} >{message.message}</div>
                 </div>)}
             </ul>
+            <SendMessage/>
         </div>
     }
 
@@ -118,7 +115,7 @@ function App() {
                     headers: {
                         "Content-Type": "application/json"
                     }
-                }).then(forceUpdate);
+                }).then(forceUpdateUsers);
             }
         }
 
@@ -129,6 +126,31 @@ function App() {
                 <button>Create User</button>
             </form>
         </div>
+    }
+
+    function SendMessage(){
+        const [messageText, setMessageText] = useState("");
+
+        async function HandleSubmit(e) {
+
+            e.preventDefault();
+            if (messageText !== "") {
+                await fetch("/api/message", {
+                    method: "post",
+                    body: JSON.stringify({userId : currentUser.id, groupId : currentGroup.id, message : messageText}),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then(forceUpdateMessages);
+            }
+        }
+
+        return <div>
+            <form onSubmit={HandleSubmit}>
+                <div><input type={"text"} value={messageText} onChange={event => {setMessageText(event.target.value)}}/></div>
+                <button>Send message</button>
+            </form>
+        </div>;
     }
 
 

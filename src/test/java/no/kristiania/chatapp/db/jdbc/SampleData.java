@@ -46,7 +46,7 @@ public class SampleData {
 
     public Message sampleMessage(Long senderId, Long groupId){
         var message = new Message();
-        message.setSenderId(senderId);
+        message.setUserId(senderId);
         message.setGroupId(groupId);
         message.setMessage(pickOne("Hello World!", "World Hello!", "Lorem ipsum", "dolor sit amet"));
         return message;

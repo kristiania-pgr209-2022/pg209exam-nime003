@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ChatAppServerTest {
     private static final Logger logger = LoggerFactory.getLogger(no.kristiania.chatapp.ChatAppServer.class);
     private ChatAppServer server;
-    private SampleData sampleData = new SampleData();
+    private final SampleData sampleData = new SampleData();
     @BeforeEach
     void setup() throws Exception {
         server = new ChatAppServer(0, InMemoryDatasource.createTestDataSource());
@@ -40,7 +40,7 @@ public class ChatAppServerTest {
         var con = openConnection("/");
         assertThat(con.getInputStream())
                 .asString(StandardCharsets.UTF_8)
-                .contains("<title>Welcome to ChatApp!</title>");
+                .contains("<title>ChatApp</title>");
     }
 
     @Test

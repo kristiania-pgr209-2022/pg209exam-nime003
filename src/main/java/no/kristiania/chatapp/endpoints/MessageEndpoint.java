@@ -1,10 +1,7 @@
 package no.kristiania.chatapp.endpoints;
 
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import no.kristiania.chatapp.db.Group;
 import no.kristiania.chatapp.db.Message;
@@ -29,5 +26,11 @@ public class MessageEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Message> retrieveAllGroupsByUser(@PathParam("groupId")long groupId) throws SQLException {
         return messageDao.retrieveAllMessagesByGroupId(groupId);
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public void save(Message message) throws SQLException {
+        messageDao.save(message);
     }
 }

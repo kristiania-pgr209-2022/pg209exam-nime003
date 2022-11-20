@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class Message {
     private long id;
-    private long senderId;
+    private long userId;
     private long groupId;
     private String message;
     private Timestamp dateTimeSent;
@@ -17,12 +17,12 @@ public class Message {
         this.id = id;
     }
 
-    public long getSenderId() {
-        return senderId;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setSenderId(long senderId) {
-        this.senderId = senderId;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public long getGroupId() {
