@@ -9,6 +9,7 @@ function App() {
     const [currentGroup, setCurrentGroup] = useState([]);
     const [updateUsers, forceUpdateUsers] = useReducer(x => x + 1, 0);
     const [updateMessages, forceUpdateMessages] = useReducer(x => x + 1, 0);
+    const [updateGroups, forceUpdateGroups] = useReducer(x => x + 1, 0);
 
     function SelectUser(user) {
         setCurrentUser(user);
@@ -81,7 +82,7 @@ function App() {
                 setGroupList(await res.json());
                 setLoading(false);
             })()
-        }, [])
+        }, [updateGroups])
 
         if (loading) {
             return <div>Select a user to see the groups they are in</div>
@@ -89,53 +90,80 @@ function App() {
 
         function JoinGroup() {
             const [groupName, setGroupName] = useState("");
-            const [allGroupsList, setAllGroupsList] = useState([]);
-            const [groupId, setGroupId] = useState();
 
              function HandleSubmit(e) {
-                e.preventDefault();
+                 e.preventDefault();
 
-                function GetAllGroupsList() {
-                    return fetch("/api/group")
-                        .then((response) => response.json())
+                 function GetAllGroups() {
+                     return fetch("/api/group").then((response) => response.json());
                 }
 
-                function CreateGroup(groupName) {
-                    return fetch("/api/group", {
-                        method: "post",
-                        body: JSON.stringify({groupName}),
-                        headers: {
-                            "Content-Type": "application/json"
-                        }
-                    }).then((response) =>
-                        response.json())
-                }
-
-                function FindGroup(groupName, groupList) {
+                function GroupExists(groupName, groupList){
                     for (const i in groupList) {
                         if (groupName === groupList[i].groupName) {
-                            setGroupId(groupList[i].id);
-                            return true;
+                            return groupList[i].id;
                         }
                     }
                     return false;
                 }
 
-                 function FindOrCreateGroup() {
-                    if (groupName !== "") {
-                        GetAllGroupsList().then(groups => setAllGroupsList(groups));
-                        if(!FindGroup(groupName, allGroupsList)){
-                            return CreateGroup(groupName).then(group => setGroupId(group.id));
+                 function CreateGroup(groupName) {
+                     return fetch("/api/group", {
+                         method: "post",
+                         body: JSON.stringify({groupName}),
+                         headers: {
+                             "Content-Type": "application/json"
+                         }
+                     }).then((response) =>
+                         response.json())
+                 }
+
+                 function ConnectGroup(groupId, userId) {
+                     return fetch("/api/link", {
+                         method: "post",
+                         body: JSON.stringify({userId, groupId}),
+                         headers: {
+                             "Content-Type": "application/json"
+                         }
+                     })
+                 }
+
+                 function UsersInGroup(groupId) {
+                     return fetch("/api/group/" + groupId + "/users")
+                         .then(response => response.json());
+                 }
+
+                 function AlreadyInGroup(groupId, user) {
+                     let bool = false;
+                     return UsersInGroup(groupId).then(users => {
+                        for(const i in users){
+                            if(users[i].id === user.id){
+                                bool = true;
+                            }
                         }
-                    }
-                }
+                    }).then(() => {
+                        return bool;
+                    })
+                 }
 
-
-                 function JoinGroup() {
-                    FindOrCreateGroup();
-                }
-
-                JoinGroup();
+                 if(groupName !== ""){
+                     let grpId;
+                     GetAllGroups().then(allGroupsList => {
+                        grpId = GroupExists(groupName, allGroupsList);
+                        if(!grpId){
+                            CreateGroup(groupName).then(group =>
+                                ConnectGroup(group.id, currentUser.id).then(forceUpdateGroups)
+                            );
+                        }
+                    }).then(() => {
+                         AlreadyInGroup(grpId, currentUser).then(userInGroupBool =>{
+                            if(grpId !== false && userInGroupBool === false){
+                                    ConnectGroup(grpId, currentUser.id).then(forceUpdateGroups);
+                                }
+                            }
+                        );
+                     });
+                 }
             }
 
             return <div className={"join_group_div"}>
@@ -187,6 +215,7 @@ function App() {
                             (groupUserList.find(user => user.id === message.userId) || "").username
                         }
                         </div>
+                        <div className={"message_title"}>{message.title}</div>
                         <div className={"message_body"} >{message.message}</div>
                         <div className={"message_timestamp"}>{message.dateTimeSent}</div>
                     </div>)}
@@ -198,6 +227,7 @@ function App() {
 
 
     function SendMessage(){
+        const [messageTitle, setMessageTitle] = useState("");
         const [messageText, setMessageText] = useState("");
 
         async function HandleSubmit(e) {
@@ -206,7 +236,7 @@ function App() {
             if (messageText !== "") {
                 await fetch("/api/message", {
                     method: "post",
-                    body: JSON.stringify({userId : currentUser.id, groupId : currentGroup.id, message : messageText}),
+                    body: JSON.stringify({userId : currentUser.id, groupId : currentGroup.id, title : messageTitle, message : messageText}),
                     headers: {
                         "Content-Type": "application/json"
                     }
@@ -216,7 +246,8 @@ function App() {
 
         return <div>
             <form onSubmit={HandleSubmit}>
-                <div><input type={"text"} value={messageText} onChange={event => {setMessageText(event.target.value)}}/></div>
+                <div><input type={"text"} placeholder={"Message Title"} value={messageTitle} onChange={event => {setMessageTitle(event.target.value)}}/></div>
+                <div><input type={"text"} placeholder={"Message Body"} value={messageText} onChange={event => {setMessageText(event.target.value)}}/></div>
                 <button>Send message</button>
             </form>
         </div>;

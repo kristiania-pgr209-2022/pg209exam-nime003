@@ -3,6 +3,6 @@ create table message(
     time_sent   datetime2(0) null default (CURRENT_TIMESTAMP),
     user_id     bigint references [user](id),
     group_id    bigint references [group](id),
-    title       nvarchar(20),
-    message     nvarchar(160)
+    title       nvarchar(50),
+    message     nvarchar(512)
 );
