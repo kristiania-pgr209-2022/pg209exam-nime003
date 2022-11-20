@@ -15,9 +15,9 @@ public class Database {
         }
 
         var dataSource = new HikariDataSource();
-        dataSource.setUsername(properties.getProperty("jdbc.username", "sa"));
-        dataSource.setPassword(properties.getProperty("jdbc.password"));
-        dataSource.setJdbcUrl(properties.getProperty("jdbc.url", "jdbc:sqlserver://localhost;encrypt=true;trustServerCertificate=true"));
+        dataSource.setUsername(properties.getProperty("dataSource.username", "sa"));
+        dataSource.setPassword(properties.getProperty("dataSource.password"));
+        dataSource.setJdbcUrl(properties.getProperty("dataSource.url", "jdbc:sqlserver://localhost;encrypt=true;trustServerCertificate=true"));
         dataSource.setConnectionTimeout(5000);
         Flyway.configure().dataSource(dataSource).load().migrate();
 

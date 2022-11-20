@@ -48,10 +48,12 @@ public class UserDaoTest {
     }
     @Test
     void shouldUpdateUser() throws SQLException {
-        var user = users.get(1);
+        var user = users.get(2);
         var userTemp = new User();
         userTemp.setId(user.getId());
         userTemp.setUsername("hanskaare");
+        userTemp.setPassword(user.getPassword());
+        userTemp.setEmail(user.getEmail());
         dao.updateUser(userTemp);
         assertThat(dao.retrieveUser(user.getId()).getUsername()).isNotSameAs(user.getUsername());
     }

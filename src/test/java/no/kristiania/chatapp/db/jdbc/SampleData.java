@@ -50,6 +50,7 @@ public class SampleData {
         message.setUserId(senderId);
         message.setGroupId(groupId);
         message.setMessage(pickOne("Hello World!", "World Hello!", "Lorem ipsum", "dolor sit amet"));
+        message.setTitle(pickOne("Lorem Ipsum", "Dolor sit amet", "Hallelujah"));
         return message;
     }
 
