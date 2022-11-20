@@ -41,10 +41,11 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
     @Override
     public void save(User user) throws SQLException {
         try (var conn = dataSource.getConnection()) {
-            var sql = "insert into [user] (username, password) values (?, ?)";
+            var sql = "insert into [user] (username, email, password) values (?, ?, ?)";
             try (var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, user.getUsername());
-                stmt.setString(2, user.getPassword());
+                stmt.setString(2, user.getEmail());
+                stmt.setString(3, user.getPassword());
                 stmt.executeUpdate();
 
                 try (var generatedKeys = stmt.getGeneratedKeys()) {
@@ -59,6 +60,7 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
         var user = new User();
         user.setId(rs.getLong("id"));
         user.setUsername(rs.getString("username"));
+        user.setEmail(rs.getString("email"));
         user.setPassword(rs.getString("password"));
         return user;
 
