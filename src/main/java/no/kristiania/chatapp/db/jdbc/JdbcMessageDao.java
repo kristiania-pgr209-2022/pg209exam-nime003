@@ -69,11 +69,12 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
     @Override
     public void save(Message message) throws SQLException {
         try (var conn = dataSource.getConnection()) {
-            var sql = "insert into message (user_id, group_id, message) values (?, ?, ?)";
+            var sql = "insert into message (user_id, group_id, message, title) values (?, ?, ?, ?)";
             try (var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setLong(1, message.getUserId());
                 stmt.setLong(2, message.getGroupId());
                 stmt.setString(3, message.getMessage());
+                stmt.setString(4, message.getTitle());
                 stmt.executeUpdate();
 
                 try (var generatedKeys = stmt.getGeneratedKeys()) {
@@ -91,6 +92,7 @@ public class JdbcMessageDao extends AbstractJdbcDao implements MessageDao {
         message.setUserId(rs.getLong("user_id"));
         message.setGroupId(rs.getLong("group_id"));
         message.setMessage(rs.getString("message"));
+        message.setTitle(rs.getString("title"));
         message.setDateTimeSent(rs.getTimestamp("time_sent"));
         return message;
     }

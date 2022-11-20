@@ -55,6 +55,7 @@ public class InMemoryDatasource {
             for (var group : groupsUserIsIn) {
                 var sampleMessage = sampleData.sampleMessage(user.getId(), group.getId());
                 sampleMessage.setMessage("sample message in " + group.getGroupName());
+                sampleMessage.setTitle("sampletitle lol");
                 messageDao.save(sampleMessage);
             }
         }

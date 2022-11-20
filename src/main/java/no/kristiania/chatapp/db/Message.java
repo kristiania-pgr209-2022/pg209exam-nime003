@@ -7,6 +7,7 @@ public class Message {
     private long userId;
     private long groupId;
     private String message;
+    private String title;
     private Timestamp dateTimeSent;
 
     public long getId() {
@@ -32,6 +33,10 @@ public class Message {
     public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
+
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
 
     public String getMessage() {
         return message;
