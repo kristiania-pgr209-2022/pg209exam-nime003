@@ -1,10 +1,11 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useReducer, useState} from 'react'
 import './App.css'
 
 function App() {
 
     const [currentUser, setCurrentUser] = useState([]);
     const [currentGroup, setCurrentGroup] = useState([]);
+    const [update, forceUpdate] = useReducer(x => x + 1, 0);
 
     function SelectUser(user) {
         setCurrentUser(user);
@@ -24,11 +25,12 @@ function App() {
                 setUserList(await res.json());
                 setLoading(false);
             })()
-        }, [])
+        }, [update])
 
         if (loading) {
             return <div>Loading users...</div>
         }
+
 
         return <div className={"user_grid"} style={{fontWeight: "bold"}}>
                 <h1>Users</h1>
@@ -51,7 +53,7 @@ function App() {
         }, [])
 
         if (loading) {
-            return <div>Loading groups...</div>
+            return <div>Select a user to see the groups they are in</div>
         }
 
         return <div className={"user_group"} style={{fontWeight: "-moz-initial"}}>
@@ -84,7 +86,7 @@ function App() {
         }, [])
 
         if (loading) {
-            return <div>Loading messages...</div>
+            return <div>Select a group to see messages</div>
         }
         return <div className={"group_message"} style={{fontWeight: "-moz-initial"}}>
             <div>Members: {groupUserList.map(user => <div>{user.username}</div>)}</div>
@@ -103,10 +105,36 @@ function App() {
         </div>
     }
 
+    function CreateUser() {
+        const [username, setUsername] = useState("");
+        const [password, setPassword] = useState("");
 
-//groupUserList.find(user => user.id === message.senderId).username
+        async function HandleSubmit(e) {
+            e.preventDefault();
+            if (username !== ""){
+                await fetch("/api/user", {
+                    method: "post",
+                    body: JSON.stringify({username, password}),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then(forceUpdate);
+            }
+        }
+
+        return <div>
+            <form onSubmit={HandleSubmit}>
+                <div>Username: <input type={"text"} value={username} onChange={event => {setUsername(event.target.value)}}/></div>
+                <div>Password: <input type={"text"} value={password} onChange={event => {setPassword(event.target.value)}}/></div>
+                <button>Create User</button>
+            </form>
+        </div>
+    }
+
+
     return (
         <div className="App">
+            <CreateUser/>
             <ListUsers/>
             <ListCurrentGroups/>
             <ListGroupMessages/>
