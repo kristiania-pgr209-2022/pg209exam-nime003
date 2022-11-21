@@ -9,7 +9,7 @@ azure links:
 
 * [x] Dere har lest eksamensteksten
 * [x] Koden er sjekket inn på github.com/pg209-2022 repository
-* [ ] Dere har lastet opp en ZIP-fil lastet ned fra Github
+* [x] Dere har lastet opp en ZIP-fil lastet ned fra Github
 * [x] Dere har committed kode med begge prosjektdeltagernes GitHub-konto (alternativt: README beskriver hvordan dere har jobbet)
 
 ## README.md
